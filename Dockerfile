@@ -32,3 +32,8 @@ RUN rm ./installer.sh
 
 COPY nvim /root/.config/nvim
 RUN nvim -c "call dein#install()" -c UpdateRemotePlugins -c q!
+
+# setup ash
+COPY ash/.ashrc /root/.ashrc
+COPY ash/.ash_aliases /root/.ash_aliases
+COPY ash/.ash_profile /root/.ash_profile
