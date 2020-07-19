@@ -2,38 +2,31 @@ FROM alpine:latest
 
 ENV LANG="en_US.UTF-8" LANGUAGE="en_US:ja" LC_ALL="en_US.UTF-8"
 
-RUN apk update
-RUN apk upgrade
-RUN apk add --update curl git gcc g++ make
-RUN apk add --update neovim
-
-# install python
-RUN apk add --update python2 python2-dev python3 python3-dev
-RUN curl -kL https://bootstrap.pypa.io/get-pip.py | python
-RUN curl -kL https://bootstrap.pypa.io/get-pip.py | python3
-
-RUN python -m pip install --upgrade pip
-RUN python -m pip install pynvim
-RUN python3 -m pip install --upgrade pip
-RUN python3 -m pip install pynvim
-
-# install nodejs
-RUN apk add --update nodejs npm
-RUN npm install -g neovim
-
-# install ruby
-RUN apk add --update ruby ruby-dev
-RUN gem install neovim
-
+# install neovim
+RUN apk update && \
+    apk add --update --no-cache --virtual .builddeps curl gcc musl-dev linux-headers make && \
+    apk add --update --no-cache bash neovim git \
+            python2-dev python3-dev \
+            nodejs npm ruby-dev && \
+# setup neovim
+    curl -kL https://bootstrap.pypa.io/get-pip.py | python && \
+    curl -kL https://bootstrap.pypa.io/get-pip.py | python3 && \
+    python -m pip install pynvim && \
+    python3 -m pip install pynvim neovim-remote && \
+    npm install -g neovim && \
+    gem install neovim && \
 # install dein.vim
-RUN curl -sf https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh
-RUN sh ./installer.sh ~/.cache/dein
-RUN rm ./installer.sh
+    curl -sf https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh && \
+    sh ./installer.sh ~/.cache/dein && \
+# remove
+    rm ./installer.sh && \
+    apk del --purge .builddeps
 
 COPY nvim /root/.config/nvim
 RUN nvim -c "call dein#install()" -c UpdateRemotePlugins -c q!
 
-# setup ash
-COPY ash/.ashrc /root/.ashrc
-COPY ash/.ash_aliases /root/.ash_aliases
-COPY ash/.ash_profile /root/.ash_profile
+COPY .bashrc /root/.bashrc
+COPY .bash_aliases /root/.bash_aliases
+COPY bin /usr/local/bin
+
+ENTRYPOINT ["nvim"]

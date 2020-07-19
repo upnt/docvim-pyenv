@@ -8,15 +8,6 @@ colorscheme monokai
 '''
 
 [[plugins]]
-repo = 'AlessandroYorba/Alduin'
-
-[[plugins]]
-repo = 'romainl/Apprentice'
-
-[[plugins]]
-repo = 'jacoborus/tender.vim'
-
-[[plugins]]
 repo = 'Shougo/deol.nvim'
 
 [[plugins]]
@@ -50,10 +41,11 @@ call my_defx#options()
 augroup My_Defx
     au!
     au FileType defx call my_defx#settings()
-augroup END
-if argc()==0
+
+if argc()==0 || argc()==1 && isdirectory(argv()[0])
     au vimenter * Defx
 endif
+augroup END
 '''
 
 [[plugins]]
@@ -70,12 +62,6 @@ repo = 'airblade/vim-gitgutter'
 
 [[plugins]]
 repo = 'tpope/vim-fugitive'
-
-[[plugins]]
-repo = 'cohama/agit.vim'
-
-[[plugins]]
-repo = 'rhysd/committia.vim'
 
 [[plugins]]
 repo = 'simeji/winresizer'

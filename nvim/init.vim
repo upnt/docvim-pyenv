@@ -36,6 +36,8 @@ set ambiwidth=double
 set showmatch
 set wildmode=list:longest
 set clipboard=unnamed
+set shell=bash
+set belloff=all
 
 " plugin settings
 if &compatible

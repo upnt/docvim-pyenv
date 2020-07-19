@@ -107,3 +107,6 @@ let g:quickrun_config = {
 \ }
 '''
 
+[[plugins]]
+repo = 'rhysd/committia.vim'
+on_ft = 'gitcommit'
