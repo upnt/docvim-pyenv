@@ -1,0 +1,1 @@
+nvr -c "cd "`pwd`
