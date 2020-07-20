@@ -28,6 +28,7 @@ augroup MyFileTypeSettings
     au FileType html setlocal shiftwidth=2
     au FileType html setlocal tabstop=2
     au FileType tex setlocal nowrap
+    au FileType deol setlocal ambiwidth=single
 augroup END
 
 " other options

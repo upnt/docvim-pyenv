@@ -20,8 +20,11 @@ RUN apk update && \
     rm ./installer.sh && \
     apk del --purge .builddeps
 
-COPY nvim /root/.config/nvim
-RUN nvim -c "call dein#install()" -c UpdateRemotePlugins -c q!
 COPY bin /usr/local/bin
+COPY nvim /root/.config/nvim
+RUN nvim -c "call dein#install()" -c UpdateRemotePlugins -c q! && \
+    echo "alias vim=\"vim.sh\"" >> /root/.bash_aliases && \
+    echo "alias rcd=\"rcd.sh\"" >> /root/.bash_aliases && \
+    echo "alias Defx=\"defx.sh\"" >> /root/.bash_aliases
 
 ENTRYPOINT ["nvim"]
