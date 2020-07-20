@@ -1,9 +1,11 @@
-FROM upnt/docker-bash
+FROM alpine:latest
+
+ENV LANG="en_US.UTF-8" LANGUAGE="en_US:ja" LC_ALL="en_US.UTF-8"
 
 # install neovim
 RUN apk update && \
     apk add --update --no-cache --virtual .builddeps curl gcc musl-dev linux-headers make && \
-    apk add --update --no-cache neovim git \
+    apk add --update --no-cache bash neovim git \
             python2-dev python3-dev \
             nodejs npm ruby-dev && \
 # setup neovim
@@ -20,11 +22,11 @@ RUN apk update && \
     rm ./installer.sh && \
     apk del --purge .builddeps
 
-COPY bin /usr/local/bin
 COPY nvim /root/.config/nvim
-RUN nvim -c "call dein#install()" -c UpdateRemotePlugins -c q! && \
-    echo "alias vim=\"vim.sh\"" >> /root/.bash_aliases && \
-    echo "alias rcd=\"rcd.sh\"" >> /root/.bash_aliases && \
-    echo "alias Defx=\"defx.sh\"" >> /root/.bash_aliases
+RUN nvim -c "call dein#install()" -c UpdateRemotePlugins -c q!
+
+COPY .bashrc /root/.bashrc
+COPY .bash_aliases /root/.bash_aliases
+COPY bin /usr/local/bin
 
 ENTRYPOINT ["nvim"]
