@@ -39,7 +39,6 @@ set wildmode=list:longest
 set clipboard=unnamed
 set shell=bash
 set belloff=all
-set autochdir
 
 " plugin settings
 if &compatible
