@@ -3,17 +3,17 @@ ENV LANG="en_US.UTF-8" LANGUAGE="en_US:ja" LC_ALL="en_US.UTF-8"
 
 # install neovim
 RUN apk update && \
-    apk add --update --no-cache curl wget make unzip \
-            linux-headers musl-dev openssl-dev outils-md5 gettext-dev \
+    apk add --update --no-cache --virtual .builddeps curl wget make unzip \
+            linux-headers musl-dev openssl-dev outils-md5 \
             pcre-dev cmake g++ libtool automake autoconf && \
-# gperf
     apk add --update --no-cache bash git \
-            python2-dev python3-dev \
+            python2-dev python3-dev gettext-dev \
             nodejs npm ruby-dev \
-            lua lua5.1-dev luajit-dev && \
+            lua5.1-dev luajit-dev && \
 # setup lua
     wget https://luarocks.org/releases/luarocks-2.4.4.tar.gz && \
     tar zxpf luarocks-2.4.4.tar.gz && \
+    rm luarocks-2.4.4.tar.gz && \
     cd luarocks-2.4.4 && \
     ./configure; make bootstrap && \
     luarocks build mpack && \
@@ -30,9 +30,11 @@ RUN apk update && \
     git clone https://github.com/neovim/neovim.git -b nightly --depth 1 && \
     cd neovim && \
     make && \
-    make install
+    make install && \
+    cd ../ && \
+#    rm -rf neovim && \
 # remove
-    #apk del --purge .builddeps
+    apk del --purge .builddeps
 
 COPY .bashrc /root/.bashrc
 COPY .inputrc /root/.inputrc
