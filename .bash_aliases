@@ -25,5 +25,3 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 
 alias vim='rvim.sh'
 alias rcd='rcd.sh'
-alias defx='rdefx.sh'
-alias Defx='rdefx.sh'

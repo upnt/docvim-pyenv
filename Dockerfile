@@ -1,6 +1,12 @@
 FROM alpine:latest
 ENV LANG="en_US.UTF-8" LANGUAGE="en_US:ja" LC_ALL="en_US.UTF-8"
 
+COPY .bashrc /root/.bashrc
+COPY .inputrc /root/.inputrc
+COPY .bash_aliases /root/.bash_aliases
+COPY bin /usr/local/bin
+COPY nvim /root/.config/nvim
+
 # install neovim
 RUN apk update && \
     apk add --update --no-cache --virtual .builddeps curl wget make unzip \
@@ -13,7 +19,6 @@ RUN apk update && \
 # setup lua
     wget https://luarocks.org/releases/luarocks-2.4.4.tar.gz && \
     tar zxpf luarocks-2.4.4.tar.gz && \
-    rm luarocks-2.4.4.tar.gz && \
     cd luarocks-2.4.4 && \
     ./configure; make bootstrap && \
     luarocks build mpack && \
@@ -32,11 +37,16 @@ RUN apk update && \
     make && \
     make install && \
     cd ../ && \
-#    rm -rf neovim && \
+# install dein
+    curl -sf https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh && \
+    sh ./installer.sh ~/.cache/dein && \
+# install plugins
+    nvim -c "call dein#install()" -c UpdateRemotePlugins -c q! && \
+    chmod u+x /usr/local/bin && \
 # remove
-    apk del --purge .builddeps
+    rm ./installer.sh && \
+    rm -rf neovim && \
+    apk del --purge .builddeps && \
+    rm /luarocks-2.4.4 -rf && \
+    rm /luarocks-2.4.4.tar.gz
 
-COPY .bashrc /root/.bashrc
-COPY .inputrc /root/.inputrc
-COPY .bash_aliases /root/.bash_aliases
-COPY bin /usr/local/bin

@@ -1,0 +1,10 @@
+[[plugins]]
+repo = 'rhysd/committia.vim'
+on_ft = 'gitcommit'
+
+[[plugins]]
+repo = 'vim-jp/vimdoc-ja'
+on_cmd = 'help'
+hook_add = '''
+set helplang=ja,en
+'''
