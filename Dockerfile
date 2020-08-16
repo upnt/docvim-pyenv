@@ -1,31 +1,34 @@
 FROM alpine:latest
 ENV LANG="en_US.UTF-8" LANGUAGE="en_US:ja" LC_ALL="en_US.UTF-8"
-
-# install neovim
 RUN apk update && \
-    apk add --update --no-cache --virtual .builddeps curl wget make unzip git\
-            linux-headers musl-dev openssl-dev outils-md5 \
-            pcre-dev cmake g++ libtool automake autoconf && \
-    apk add --update --no-cache \
-            python2-dev python3-dev gettext-dev \
-            nodejs npm ruby-dev \
-            lua5.1-dev  && \
-# luajit-dev
-# setup lua
-    wget https://luarocks.org/releases/luarocks-2.4.4.tar.gz && \
-    tar zxpf luarocks-2.4.4.tar.gz && \
-    cd luarocks-2.4.4 && \
-    ./configure; make bootstrap && \
-    luarocks build mpack && \
-    luarocks build lpeg && \
-    luarocks build inspect && \
-# setup neovim
-    curl -kL https://bootstrap.pypa.io/get-pip.py | python && \
-    curl -kL https://bootstrap.pypa.io/get-pip.py | python3 && \
-    python -m pip install pynvim && \
-    python3 -m pip install pynvim neovim-remote && \
-    npm install -g neovim && \
-    gem install neovim && \
+    apk add --update --no-cache --virtual .builddeps git \
+            build-base libffi-dev openssl-dev \
+            bzip2-dev zlib-dev readline-dev sqlite-dev && \
+    apk add --update --no-cache bash \
+            ruby-dev nodejs npm && \
+    git clone https://github.com/pyenv/pyenv.git ~/.pyenv && \
+    git clone https://github.com/pyenv/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv && \
+    echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc && \
+    echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc && \
+    echo 'eval "$(pyenv init -)"' >> ~/.bashrc && \
+    echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc
+SHELL ["/bin/bash", "-c"]
+RUN source ~/.bashrc && \
+# install neovim
+#automake autoconf pcre-dev openssl-dev outils-md5 wget unzip
+            #gettext-dev
+# install python2
+    pyenv install 2.7.18 && \
+    pyenv virtualenv 2.7.18 neovim2 && \
+    pyenv activate neovim2 && \
+    pip2 install -U pip && \
+    pip2 install pynvim && \
+# install python3
+    pyenv install 3.8.5 && \
+    pyenv virtualenv 3.8.5 neovim3 && \
+    pyenv activate neovim3 && \
+    pip3 install -U pip && \
+    pip3 install pynvim && \
 # install neovim
     git clone https://github.com/neovim/neovim.git -b nightly --depth 1 && \
     cd neovim && \
@@ -34,7 +37,4 @@ RUN apk update && \
     cd ../ && \
 # remove
     rm -rf neovim && \
-    apk del --purge .builddeps && \
-    rm /luarocks-2.4.4 -rf && \
-    rm /luarocks-2.4.4.tar.gz
-
+    apk del --purge .builddeps
