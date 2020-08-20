@@ -28,7 +28,8 @@ RUN source ~/.bashrc && \
     pip2 install -U pip && \
     pip2 install pynvim && \
     pyenv global 2.7.18 && \
-    pip2 install -U pip && \
+    pip install -U pip && \
+    pip install neovim-remote && \
 # install python3
     pyenv install 3.8.5 && \
     pyenv virtualenv 3.8.5 py3nvim && \
@@ -36,4 +37,5 @@ RUN source ~/.bashrc && \
     pip3 install -U pip && \
     pip3 install pynvim && \
     pyenv global 3.8.5 && \
-    pip3 install -U pip
+    pip install -U pip && \
+    pip install neovim-remote
