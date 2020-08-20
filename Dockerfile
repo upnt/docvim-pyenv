@@ -4,6 +4,7 @@ RUN apk update && \
     apk add --update --no-cache git bash curl \
             build-base libffi-dev openssl-dev \
             bzip2-dev zlib-dev readline-dev sqlite-dev \
+            linux-headers \
             neovim neovim-doc \
             ruby-dev nodejs npm && \
     git clone https://github.com/pyenv/pyenv.git ~/.pyenv && \
